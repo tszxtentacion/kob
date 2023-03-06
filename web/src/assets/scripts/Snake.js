@@ -47,15 +47,6 @@ export class Snake extends AcGameObject {
         this.cells[0].y -= this.speed * this.timedelta / 1000;
     }
 
-    // 判断两条蛇是否都准备好下一回合
-    check_ready() {
-        for (const snake of this.snakes) {
-            if (snake.status !== "idle") return false;
-            if (snake.direction === -1) return false;
-        }
-        return true;
-    }
-
     // 将蛇的状态改变为走下一步
     next_step() {
         const d = this.direction;

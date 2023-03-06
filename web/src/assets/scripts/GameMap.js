@@ -117,6 +117,15 @@ export class GameMap extends AcGameObject {
         this.ctx.canvas.height = this.L * this.rows;
     }
 
+    // 判断两条蛇是否都准备好下一回合
+    check_ready() {
+        for (const snake of this.snakes) {
+            if (snake.status !== "idle") return false;
+            if (snake.direction === -1) return false;
+        }
+        return true;
+    }
+
     // 让两条蛇进入下一回合
     next_step() {
         for (const snake of this.snakes) {
