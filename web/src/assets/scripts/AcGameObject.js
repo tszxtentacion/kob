@@ -10,7 +10,7 @@ export class AcGameObject {
     start() {   // 只执行一次
     }
 
-    updated() { // 每一帧执行一次，除了第一帧之外
+    update() { // 每一帧执行一次，除了第一帧之外
         
     }
 
@@ -19,9 +19,8 @@ export class AcGameObject {
     }
 
     destroy() { // 从AC_GAME_OBJECTS数组中删除
-        for (let i in AC_GAME_OBJECTS[i]) {
-            this.on_destroy();
-
+        this.on_destroy();
+        for (let i in AC_GAME_OBJECTS) {
             const obj = AC_GAME_OBJECTS[i];
             if (obj === this) {
                 AC_GAME_OBJECTS.splice(i);
@@ -39,7 +38,7 @@ const step = timestamp => {
             obj.start();
         } else {
             obj.timedelta = timestamp - last_timestamp;
-            obj.updated();
+            obj.update();
         }
     }
 
@@ -47,4 +46,4 @@ const step = timestamp => {
     requestAnimationFrame(step);
 }
 
-requestAnimationFrame(step)
+requestAnimationFrame(step);
