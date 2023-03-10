@@ -149,7 +149,27 @@ export class GameMap extends AcGameObject {
                 this.ctx.fillRect(c*this.L, r* this.L, this.L, this.L);
             }
         }
-        
     }
+
+    // 检测两条蛇是否合法，没有撞到两条蛇的身体和障碍物
+    check_valid(cell) {
+        for (const wall of this.walls) {
+            if (wall.r === cell.r && wall.c === cell.c) 
+                return false;
+        }
+
+        for (const snake of this.snakes) {
+            // 特判蛇尾，因为可能缩可能不缩
+            let k = snake.cells.length;
+            if( ! snake.check_tail_increasing()) {
+                k -- ;
+            }
+            for ( let i = 0;i<k;i++) {
+                if (snake.cells[i].r === cell.r && snake.cells[i].c === cell.c)
+                    return false;
+            }
+        }
+        return true;
+     }
 
 }
