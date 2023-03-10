@@ -79,37 +79,6 @@ export class GameMap extends AcGameObject {
         return true;
     }
 
-    start() {
-        for ( let i = 0; i<1000000;i++) {
-            if (this.create_walls()) 
-                break;
-        }
-    }
-
-    update() {
-        this.update_size();
-        // if (this.check_ready()) {
-        //     this.next_step();
-        // }
-        this.render();
-    }
-
-    render() {
-        const color_even = "#AAD751", color_odd = "#A2D149";
-        this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-        for (let r = 0; r< this.rows;r++) {
-            for (let c = 0; c< this.cols; c++) {
-                if((r+c) %2 == 0) {
-                    this.ctx.fillStyle = color_even;
-                } else {
-                    this.ctx.fillStyle = color_odd;
-                } 
-                this.ctx.fillRect(c*this.L, r* this.L, this.L, this.L);
-            }
-        }
-        
-    }
-
     // 让地图大小随着浏览器页面大小动态变化
     update_size() {
         this.L = parseInt(Math.min(this.parent.clientWidth / this.cols, this.parent.clientHeight / this.rows));
@@ -132,4 +101,55 @@ export class GameMap extends AcGameObject {
             snake.next_step();
         }
     }
+
+    // 获取用户输入
+    add_listening_events() {
+        this.ctx.canvas.focus();    // 聚焦到地图
+        
+        const [snake0, snake1] = this.snakes;
+        this.ctx.canvas.addEventListener("keydown", e => {
+            if (e.key === 'w') snake0.set_direction(0);
+            else if (e.key === 'd') snake0.set_direction(1);
+            else if (e.key === 's') snake0.set_direction(2);
+            else if (e.key === 'a') snake0.set_direction(3);
+            else if (e.key === 'ArrowUp') snake1.set_direction(0);
+            else if (e.key === 'ArrowRight') snake1.set_direction(1);
+            else if (e.key === 'ArrowDown') snake1.set_direction(2);
+            else if (e.key === 'ArrowLeft') snake1.set_direction(3);
+        });
+    }
+
+    start() {
+        for ( let i = 0; i<1000000;i++) {
+            if (this.create_walls()) 
+                break;
+        }
+
+        this.add_listening_events();
+    }
+
+    update() {
+        this.update_size();
+        if (this.check_ready()) {
+            this.next_step();
+        }
+        this.render();
+    }
+
+    render() {
+        const color_even = "#AAD751", color_odd = "#A2D149";
+        this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        for (let r = 0; r< this.rows;r++) {
+            for (let c = 0; c< this.cols; c++) {
+                if((r+c) %2 == 0) {
+                    this.ctx.fillStyle = color_even;
+                } else {
+                    this.ctx.fillStyle = color_odd;
+                } 
+                this.ctx.fillRect(c*this.L, r* this.L, this.L, this.L);
+            }
+        }
+        
+    }
+
 }

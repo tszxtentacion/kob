@@ -20,14 +20,18 @@ export class Snake extends AcGameObject {
         this.dc = [0, 1, 0, -1];
 
         this.step = 0; // 当前回合数
+
+        this.eps = 1e-2; // 用于判断两个块靠在一起的阈值
     }
 
     start() {
 
     }
 
-    update() {
-        this.update_move(); 
+    update() { // 每一帧执行一次
+        if (this.status === 'move') {
+            this.update_move();
+        }
         this.render();
     }
 
@@ -44,7 +48,19 @@ export class Snake extends AcGameObject {
     }
 
     update_move() {
-        this.cells[0].y -= this.speed * this.timedelta / 1000;
+        const dx = this.next_cell.x - this.cells[0].x;
+        const dy = this.next_cell.y - this.cells[0].y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if ( distance < this.eps ) {
+            this.cells[0] = this.next_cell; // 添加一个新的蛇头
+            this.next_cell = null;
+            this.status = "idle";
+
+        } else {
+            const move_distance = this.speed * this.timedelta / 1000; // 每两帧之间走过的距离
+            this.cells[0].x += move_distance * dx / distance;
+            this.cells[0].y += move_distance * dy / distance;
+        }
     }
 
     // 将蛇的状态改变为走下一步
@@ -54,7 +70,14 @@ export class Snake extends AcGameObject {
         this.direction = -1; // 清空操作
         this.status = "move";
         this.step++;
+
+        const k = this.cells.length;
+        for (let i = k; i > 0; i--) {
+            this.cells[i] = JSON.parse(JSON.stringify(this.cells[i-1]));
+        }
     }
 
-
+    set_direction(d) {
+        this.direction = d;
+    }
 }
